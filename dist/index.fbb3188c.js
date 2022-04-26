@@ -530,6 +530,11 @@ var _const = require("./const");
 var _view = require("./view");
 _const.UI_ELEMENTS.SETTINGS.OPEN.addEventListener('click', _view.settingsOpen);
 _const.UI_ELEMENTS.SETTINGS.CLOSE.addEventListener('click', _view.settingsClose);
+_const.UI_ELEMENTS.SETTINGS.WINDOW.addEventListener('click', _view.checkClickOnTarget);
+_const.UI_ELEMENTS.ALL_BUTTONS.forEach((item)=>item.addEventListener('click', function(e) {
+        e.preventDefault();
+    })
+);
 
 },{"./view":"2GA9o","./const":"hKAsx"}],"2GA9o":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -538,14 +543,19 @@ parcelHelpers.export(exports, "settingsOpen", ()=>settingsOpen
 );
 parcelHelpers.export(exports, "settingsClose", ()=>settingsClose
 );
+parcelHelpers.export(exports, "checkClickOnTarget", ()=>checkClickOnTarget
+);
 var _const = require("./const");
 function settingsOpen() {
     _const.UI_ELEMENTS.SETTINGS.WINDOW.style.display = 'flex';
-    console.log('1');
+    _const.UI_ELEMENTS.OVERLAY.classList.add('container--active');
 }
 function settingsClose() {
     _const.UI_ELEMENTS.SETTINGS.WINDOW.style.display = 'none';
-    console.log('2');
+    _const.UI_ELEMENTS.OVERLAY.classList.remove('container--active');
+}
+function checkClickOnTarget(e) {
+    if (e.target === _const.UI_ELEMENTS.SETTINGS.WINDOW) settingsClose();
 }
 
 },{"./const":"hKAsx","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"hKAsx":[function(require,module,exports) {
@@ -553,13 +563,19 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "UI_ELEMENTS", ()=>UI_ELEMENTS
 );
+parcelHelpers.export(exports, "arrMessage", ()=>arrMessage
+);
 const UI_ELEMENTS = {
     SETTINGS: {
         WINDOW: document.querySelector('.settings'),
         OPEN: document.querySelector('.header__settings'),
         CLOSE: document.querySelector('.settings__exit')
-    }
+    },
+    OVERLAY: document.querySelector('.container'),
+    ALL_BUTTONS: document.querySelectorAll('.btn'),
+    INPUT_MESSAGE: document.querySelector('.form__input')
 };
+const arrMessage = [];
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {

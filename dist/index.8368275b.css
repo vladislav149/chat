@@ -91,7 +91,15 @@ body {
   position: relative;
 }
 
-.btn {
+.container--active:after {
+  content: "";
+  z-index: 3;
+  background-color: #535353;
+  position: absolute;
+  inset: 0;
+}
+
+.btn, .input {
   border: 1px solid #000;
   padding: 6px 8px;
 }
@@ -190,6 +198,11 @@ body {
 .settings__label {
   margin-bottom: 8px;
   display: block;
+}
+
+.settings__input {
+  max-width: 202px;
+  margin-right: 8px;
 }
 
 /*# sourceMappingURL=index.8368275b.css.map */
