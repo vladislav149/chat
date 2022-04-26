@@ -1,5 +1,5 @@
 import { UI_ELEMENTS } from "./const";
-import { settingsClose, checkClickOnTarget, settingsOpen, stopSubmit } from "./view";
+import { settingsClose, checkClickOnTarget, settingsOpen, stopSubmit, closeTab } from "./view";
 
 UI_ELEMENTS.SETTINGS.OPEN.addEventListener('click', settingsOpen);
 UI_ELEMENTS.SETTINGS.CLOSE.addEventListener('click', settingsClose);
@@ -9,3 +9,5 @@ UI_ELEMENTS.ALL_BUTTONS.forEach(item =>
     e.preventDefault();
   })
 );
+
+UI_ELEMENTS.BUTTON_EXIT.addEventListener('click', closeTab);

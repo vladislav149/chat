@@ -1,18 +1,18 @@
 4233
 41/home/vlad/learnJS/chat/package-lock.json1650974662746751873 0
-34/home/vlad/learnJS/chat/js/main.js1650991224730044587 0
-34/home/vlad/learnJS/chat/js/view.js1650991488456377870 0
-35/home/vlad/learnJS/chat/js/const.js1650991529476272594 0
+34/home/vlad/learnJS/chat/js/main.js1650992191297742424 0
+34/home/vlad/learnJS/chat/js/view.js1650992207749826704 0
+35/home/vlad/learnJS/chat/js/const.js1650991955216718047 0
 39/home/vlad/learnJS/chat/scss/style.scss1650991427616600350 0
 38/home/vlad/learnJS/chat/scss/vars.scss1650974598745780347 0
 39/home/vlad/learnJS/chat/scss/fonts.scss1650974598745780347 0
 36/home/vlad/learnJS/chat/package.json1650974598745780347 0
-34/home/vlad/learnJS/chat/.gitignore1650974598713779825 0
+34/home/vlad/learnJS/chat/.gitignore1650991609728159183 0
 57/home/vlad/learnJS/chat/dist/Roboto-Regular.4685df76.woff1650991054313443747 0
 47/home/vlad/learnJS/chat/dist/index.8368275b.css1650991427724599881 0
 61/home/vlad/learnJS/chat/dist/Roboto-LightItalic.3db4131e.woff1650991054313443747 0
 51/home/vlad/learnJS/chat/dist/index.8368275b.css.map1650991427724599881 0
-39/home/vlad/learnJS/chat/dist/index.html1650991417192647020 0
+39/home/vlad/learnJS/chat/dist/index.html1650991636884145982 0
 45/home/vlad/learnJS/chat/dist/chat.3464ddca.js1650974598741780282 0
 49/home/vlad/learnJS/chat/dist/chat.3464ddca.js.map1650974598741780282 0
 34/home/vlad/learnJS/chat/index.html1650991417112647388 0
@@ -377,7 +377,7 @@
 46/home/vlad/learnJS/chat/node_modules/commander1650974650990583747 1
 65/home/vlad/learnJS/chat/node_modules/chrome-trace-event/README.md1650974650930582877 0
 55/home/vlad/learnJS/chat/node_modules/chrome-trace-event1650974650958583283 1
-46/home/vlad/learnJS/chat/dist/index.fbb3188c.js1650991529552272431 0
+46/home/vlad/learnJS/chat/dist/index.fbb3188c.js1650992207829827117 0
 59/home/vlad/learnJS/chat/node_modules/is-number/package.json1650974650874582065 0
 79/home/vlad/learnJS/chat/node_modules/htmlnano/lib/modules/removeOptionalTags.js1650974651098585312 0
 55/home/vlad/learnJS/chat/node_modules/is-number/index.js1650974650882582180 0
@@ -684,7 +684,7 @@
 94/home/vlad/learnJS/chat/node_modules/@parcel/workers/test/integration/workerfarm/master-sum.js1650974653242616300 0
 91/home/vlad/learnJS/chat/node_modules/@parcel/workers/test/integration/workerfarm/ipc-pid.js1650974653242616300 0
 98/home/vlad/learnJS/chat/node_modules/@parcel/workers/test/integration/workerfarm/reverse-handle.js1650974653246616356 0
-50/home/vlad/learnJS/chat/dist/index.fbb3188c.js.map1650991529552272431 0
+50/home/vlad/learnJS/chat/dist/index.fbb3188c.js.map1650992207829827117 0
 100/home/vlad/learnJS/chat/node_modules/@parcel/workers/test/integration/workerfarm/shared-reference.js1650974653246616356 0
 108/home/vlad/learnJS/chat/node_modules/@parcel/workers/test/integration/workerfarm/resolve-shared-reference.js1650974653246616356 0
 88/home/vlad/learnJS/chat/node_modules/@parcel/workers/test/integration/workerfarm/ping.js1650974653242616300 0
@@ -3747,7 +3747,7 @@
 68/home/vlad/learnJS/chat/node_modules/caniuse-lite/data/regions/MX.js1650974652382603886 0
 48/home/vlad/learnJS/chat/node_modules/yaml/map.js1650974651034584384 0
 68/home/vlad/learnJS/chat/node_modules/caniuse-lite/data/regions/TW.js1650974652810610068 0
-28/home/vlad/learnJS/chat/dist1650991529552272431 1
+28/home/vlad/learnJS/chat/dist1650992207829827117 1
 68/home/vlad/learnJS/chat/node_modules/caniuse-lite/data/regions/MD.js1650974652378603828 0
 58/home/vlad/learnJS/chat/node_modules/css-what/lib/commonjs1650974651098585312 1
 75/home/vlad/learnJS/chat/node_modules/@parcel/packager-js/src/DevPackager.js1650974651150586064 0

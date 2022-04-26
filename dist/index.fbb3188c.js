@@ -535,6 +535,7 @@ _const.UI_ELEMENTS.ALL_BUTTONS.forEach((item)=>item.addEventListener('click', fu
         e.preventDefault();
     })
 );
+_const.UI_ELEMENTS.BUTTON_EXIT.addEventListener('click', _view.closeTab);
 
 },{"./view":"2GA9o","./const":"hKAsx"}],"2GA9o":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -544,6 +545,8 @@ parcelHelpers.export(exports, "settingsOpen", ()=>settingsOpen
 parcelHelpers.export(exports, "settingsClose", ()=>settingsClose
 );
 parcelHelpers.export(exports, "checkClickOnTarget", ()=>checkClickOnTarget
+);
+parcelHelpers.export(exports, "closeTab", ()=>closeTab
 );
 var _const = require("./const");
 function settingsOpen() {
@@ -556,6 +559,9 @@ function settingsClose() {
 }
 function checkClickOnTarget(e) {
     if (e.target === _const.UI_ELEMENTS.SETTINGS.WINDOW) settingsClose();
+}
+function closeTab() {
+    if (confirm('Вы действительно хотите закрыть страницу?')) window.close();
 }
 
 },{"./const":"hKAsx","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"hKAsx":[function(require,module,exports) {
@@ -573,7 +579,8 @@ const UI_ELEMENTS = {
     },
     OVERLAY: document.querySelector('.container'),
     ALL_BUTTONS: document.querySelectorAll('.btn'),
-    INPUT_MESSAGE: document.querySelector('.form__input')
+    INPUT_MESSAGE: document.querySelector('.form__input'),
+    BUTTON_EXIT: document.querySelector('.header__exit')
 };
 const arrMessage = [];
 

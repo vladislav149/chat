@@ -16,3 +16,8 @@ export function checkClickOnTarget(e) {
   }
 }
 
+export function closeTab() {
+  if (confirm('Вы действительно хотите закрыть страницу?')) {
+	window.close();
+  }
+}

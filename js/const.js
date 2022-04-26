@@ -7,6 +7,7 @@ export const UI_ELEMENTS = {
   OVERLAY: document.querySelector('.container'),
   ALL_BUTTONS: document.querySelectorAll('.btn'),
   INPUT_MESSAGE: document.querySelector('.form__input'),
+  BUTTON_EXIT: document.querySelector('.header__exit'),
 }
 
 export const arrMessage = [];
