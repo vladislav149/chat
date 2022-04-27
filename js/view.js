@@ -1,4 +1,6 @@
-import { UI_ELEMENTS } from "./const";
+/* eslint-disable no-alert */
+/* eslint-disable no-restricted-globals */
+import { UI_ELEMENTS } from './const';
 
 export function settingsOpen() {
   UI_ELEMENTS.SETTINGS.WINDOW.style.display = 'flex';
@@ -11,13 +13,30 @@ export function settingsClose() {
 }
 
 export function checkClickOnTarget(e) {
-  if (e.target===UI_ELEMENTS.SETTINGS.WINDOW) {
+  if (e.target === UI_ELEMENTS.SETTINGS.WINDOW) {
     settingsClose();
   }
 }
 
 export function closeTab() {
   if (confirm('Вы действительно хотите закрыть страницу?')) {
-	window.close();
+    window.close();
   }
+}
+
+export function showMessage(textMessage, timeMessage) {
+  const templateText = UI_ELEMENTS.TEMPLATE.ME.content.querySelector('p');
+  const templateTime = UI_ELEMENTS.TEMPLATE.ME.content.querySelector('.messages__time');
+  templateText.textContent = textMessage;
+  templateTime.textContent = timeMessage;
+  const li = UI_ELEMENTS.TEMPLATE.ME.content.cloneNode(true);
+  UI_ELEMENTS.MESSAGE_LIST.append(li);
+}
+
+export function scrollToLastMessage() {
+  UI_ELEMENTS.MESSAGE_LIST_CONTAINER.scrollTop = UI_ELEMENTS.MESSAGE_LIST_CONTAINER.scrollHeight;
+}
+
+export function clearInputMessage() {
+  UI_ELEMENTS.INPUT_MESSAGE.value = '';
 }

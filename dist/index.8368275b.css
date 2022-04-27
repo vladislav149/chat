@@ -112,29 +112,42 @@ body {
 
 .main {
   height: 437px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   border: 1px solid #000;
   margin-bottom: 8px;
   padding: 8px;
+  overflow: auto;
+}
+
+.main::-webkit-scrollbar {
+  display: none;
 }
 
 .messages {
-  height: 100%;
+  min-height: 100%;
   flex-direction: column;
-  justify-content: end;
+  justify-content: flex-end;
   display: flex;
 }
 
 .messages__item {
   width: fit-content;
+  max-width: 100%;
+  overflow-wrap: break-word;
   background-color: #e5e5e5;
   padding: 8px;
+}
+
+.messages__item > p {
+  display: inline;
 }
 
 .messages__item--me {
   align-self: flex-end;
 }
 
-.messages__item:not(last-child) {
+.messages__item:not(:last-child) {
   margin-bottom: 8px;
 }
 
@@ -185,14 +198,12 @@ body {
 }
 
 .settings__exit {
-  content: "";
   width: 44px;
   height: 44px;
-  font-size: 24px;
+  font-size: 18px;
   position: absolute;
   top: 0;
   right: 0;
-  transform: rotate(45deg);
 }
 
 .settings__label {

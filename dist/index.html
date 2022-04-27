@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Чат</title>
   <link rel="stylesheet" href="index.8368275b.css">
 </head>
 
@@ -14,7 +14,7 @@
   <div class="settings">
     <div class="settings__inner">
       <h2 class="settings__title">Настройки</h2>
-      <button class="settings__exit">+</button>
+      <button class="settings__exit" type="button">x</button>
       <form class="settings__form" action="#">
         <label class="settings__label" for="settings">Имя в чате</label>
         <input class="settings__input input" type="text" id="settings" placeholder="Введите имя..." required="">
@@ -25,31 +25,35 @@
 
   <div class="container">
     <header class="header">
-      <button class="header__settings btn">Настройки</button>
-      <button class="header__exit btn">Выйти</button>
+      <button class="header__settings btn" type="button">Настройки</button>
+      <button class="header__exit btn" type="button">Выйти</button>
     </header>
 
     <main class="main">
       <ul class="messages">
         <li class="messages__item messages__item--me">
-          <span class="messages__name">Я: </span>Добрый день!
+          <span class="messages__name">Я: </span>
+          <p>Добрый день!</p>
           <time class="messages__time">18:45</time>
         </li>
 
         <li class="messages__item ">
-          <span class="messages__name">Собеседник мой: </span>Добрый день!
+          <span class="messages__name">Собеседник мой: </span>
+          <p>Добрый день!</p>
           <time class="messages__time">18:45</time>
         </li>
 
         <li class="messages__item">
-          <span class="messages__name">Собеседник мой: </span>А это второе и, кажется, оно очень
-          длинное, чтобы поместиться на
-          одной строке
+          <span class="messages__name">Собеседник мой: </span>
+          <p>А это второе и, кажется, оно очень
+            длинное, чтобы поместиться на
+            одной строке</p>
           <time class="messages__time">18:45</time>
         </li>
 
         <li class="messages__item messages__item--me">
-          <span class="messages__name">Я: </span>Добрый день!
+          <span class="messages__name">Я: </span>
+          <p>Добрый день!</p>
           <time class="messages__time">18:45</time>
         </li>
       </ul>
@@ -64,6 +68,23 @@
       </form>
     </footer>
   </div>
+
+  <template id="messages-me">
+    <li class="messages__item messages__item--me">
+      <span class="messages__name">Я: </span>
+      <p></p>
+      <time class="messages__time"></time>
+    </li>
+  </template>
+
+  <template id="messages-companion">
+    <li class="messages__item messages__item--me">
+      <span class="messages__name">Я: </span>
+      <p></p>
+      <time class="messages__time"></time>
+    </li>
+  </template>
+
   <script src="index.fbb3188c.js" defer=""></script>
 </body>
 

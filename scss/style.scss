@@ -53,24 +53,37 @@ body {
   border: 1px solid $black;
   margin-bottom: 8px;
   height: 437px;
+  overflow: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+  display: none;
+  }
 }
 
 .messages {
   display: flex;
   flex-direction: column;
-  justify-content: end;
-  height: 100%;
+  justify-content: flex-end;
+  min-height: 100%;
+  
   &__item {
     background-color: $gray-200;
     width: fit-content;
+    max-width: 100%;
     padding: 8px;
+    overflow-wrap: break-word;
+
+    >p {
+      display: inline;
+    }
 
     &--me {
       align-self: flex-end;
     }
   }
 
-  &__item:not(last-child) {
+  &__item:not(:last-child) {
     margin-bottom: 8px;
   }
 
@@ -121,13 +134,11 @@ body {
 
   &__exit {
     position: absolute;
-    content: "";
     width: 44px;
     height: 44px;
     right: 0;
     top: 0;
-    transform: rotate(45deg);
-    font-size: 24px;
+    font-size: 18px;
   }
 
   &__label {
