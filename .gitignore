@@ -8,3 +8,5 @@ package-lock.json
 trash/
 trash/*
 .parcel-cache
+.parcel-cache/
+.parcel-cache/*

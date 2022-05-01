@@ -1,27 +1,32 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-alert */
 /* eslint-disable no-restricted-globals */
 import { UI_ELEMENTS } from './const';
 
-export function settingsOpen() {
-  UI_ELEMENTS.SETTINGS.WINDOW.style.display = 'flex';
+export function openPopup(e) {
+  if (UI_ELEMENTS.POPUP.OPEN_SETTINGS === e.target) {
+    UI_ELEMENTS.POPUP.SETTINGS.style.display = 'flex';
+  } else if (UI_ELEMENTS.BUTTON_LOG_IN === e) {
+    UI_ELEMENTS.POPUP.LOG_IN.style.display = 'flex';
+  } else if (UI_ELEMENTS.POPUP.INPUT_EMAIL === e) {
+    UI_ELEMENTS.POPUP.SEND_CODE.style.display = 'flex';
+  }
   UI_ELEMENTS.OVERLAY.classList.add('container--active');
 }
 
-export function settingsClose() {
-  UI_ELEMENTS.SETTINGS.WINDOW.style.display = 'none';
+export function closePopup() {
+  UI_ELEMENTS.POPUP.POPUPS.forEach((element) => {
+    element.style.display = 'none';
+  });
   UI_ELEMENTS.OVERLAY.classList.remove('container--active');
 }
 
 export function checkClickOnTarget(e) {
-  if (e.target === UI_ELEMENTS.SETTINGS.WINDOW) {
-    settingsClose();
-  }
-}
-
-export function closeTab() {
-  if (confirm('Вы действительно хотите закрыть страницу?')) {
-    window.close();
-  }
+  UI_ELEMENTS.POPUP.POPUPS.forEach((element) => {
+    if (e.target === element) {
+      closePopup();
+    }
+  });
 }
 
 export function showMessage(textMessage, timeMessage) {
@@ -37,6 +42,6 @@ export function scrollToLastMessage() {
   UI_ELEMENTS.MESSAGE_LIST_CONTAINER.scrollTop = UI_ELEMENTS.MESSAGE_LIST_CONTAINER.scrollHeight;
 }
 
-export function clearInputMessage() {
-  UI_ELEMENTS.INPUT_MESSAGE.value = '';
+export function clearInputMessage(input) {
+  input.value = '';
 }
