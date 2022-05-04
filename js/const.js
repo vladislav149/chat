@@ -23,8 +23,14 @@ export const UI_ELEMENTS = {
   MESSAGE_LIST_CONTAINER: document.querySelector('.main'),
   SEND_CODE_BUTTON: document.querySelector('.popup__btn--code'),
   LOG_IN: document.querySelector('.popup__btn--log-in'),
+  CHANGE_NAME_BUTTON: document.querySelector('.popup__btn--settings'),
 };
 
 export const url = 'https://mighty-cove-31255.herokuapp.com/api/user';
+export const url1 = 'https://mighty-cove-31255.herokuapp.com/api/user/me';
+
+export const user = {
+  name: 'Я:',
+};
 
 export const arrMessage = [];

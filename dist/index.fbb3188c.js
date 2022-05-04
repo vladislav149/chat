@@ -526,9 +526,19 @@ function hmrAcceptRun(bundle, id) {
 }
 
 },{}],"bDbGG":[function(require,module,exports) {
-/* eslint-disable max-len */ /* eslint-disable import/no-extraneous-dependencies */ var _dateFns = require("date-fns");
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+/* eslint-disable no-useless-escape */ /* eslint-disable no-console */ /* eslint-disable import/named */ /* eslint-disable no-undef */ /* eslint-disable no-alert */ /* eslint-disable max-len */ /* eslint-disable import/no-extraneous-dependencies */ var _jsCookie = require("js-cookie");
+var _jsCookieDefault = parcelHelpers.interopDefault(_jsCookie);
+var _dateFns = require("date-fns");
 var _const = require("./const");
 var _view = require("./view");
+// const token
+// const socket = new WebSocket(`ws://mighty-cove-31255.herokuapp.com/websockets?${token}`);
+const isThereAnyCookies = Object.keys(_jsCookieDefault.default.get()).length === 0;
+if (isThereAnyCookies) {
+    _const.UI_ELEMENTS.BUTTON_LOG_IN.textContent = 'Войти';
+    _const.user.name = 'Я: ';
+} else _const.UI_ELEMENTS.BUTTON_LOG_IN.textContent = 'Выйти';
 function sendMessage() {
     const textMessage = _const.UI_ELEMENTS.INPUT_MESSAGE.value;
     const timeMessage = _dateFns.format(new Date(), 'HH:mm');
@@ -536,125 +546,190 @@ function sendMessage() {
         textMessage,
         timeMessage
     });
-    _view.showMessage(textMessage, timeMessage);
+    _view.showMessage(textMessage, timeMessage, _const.user.name);
     _view.scrollToLastMessage();
-    _view.clearInputMessage();
+    _view.clearInputMessage(_const.UI_ELEMENTS.INPUT_MESSAGE);
 }
-_const.UI_ELEMENTS.SETTINGS.OPEN.addEventListener('click', _view.settingsOpen);
-_const.UI_ELEMENTS.SETTINGS.CLOSE.addEventListener('click', _view.settingsClose);
-_const.UI_ELEMENTS.SETTINGS.WINDOW.addEventListener('click', _view.checkClickOnTarget);
+function logInOrLogOut() {
+    if (_const.UI_ELEMENTS.BUTTON_LOG_IN.textContent === 'Выйти') {
+        _const.UI_ELEMENTS.BUTTON_LOG_IN.textContent = 'Войти';
+        _jsCookieDefault.default.remove('token');
+        _const.user.name = 'Я:';
+    } else _view.openPopup(_const.UI_ELEMENTS.BUTTON_LOG_IN);
+}
+async function sendCode() {
+    const email = _const.UI_ELEMENTS.POPUP.INPUT_EMAIL.value;
+    _view.clearInputMessage(_const.UI_ELEMENTS.POPUP.INPUT_EMAIL);
+    if (!email) {
+        _const.UI_ELEMENTS.POPUP.INPUT_EMAIL.placeholder = 'нельзя ввести пустой email';
+        return;
+    }
+    try {
+        const response = await fetch(_const.url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify({
+                email
+            })
+        });
+        if (response.ok) _view.openPopup(_const.UI_ELEMENTS.POPUP.INPUT_EMAIL);
+        else _const.UI_ELEMENTS.POPUP.INPUT_EMAIL.placeholder = 'Перепроверьте почту';
+    } catch (error) {
+        alert(error);
+    }
+}
+async function logIn() {
+    const token = _const.UI_ELEMENTS.POPUP.INPUT_CODE.value;
+    const name = _const.UI_ELEMENTS.POPUP.INPUT_NAME.value || 'no_name';
+    console.log(name);
+    _jsCookieDefault.default.set('token', token);
+    try {
+        const response = await fetch(_const.url, {
+            method: 'PATCH',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify({
+                name
+            })
+        });
+        if (response.ok) {
+            _view.closePopup();
+            _view.changeName(name);
+            _const.UI_ELEMENTS.BUTTON_LOG_IN.textContent = 'Выйти';
+        } else _const.UI_ELEMENTS.POPUP.INPUT_CODE.placeholder = 'Перепроверьте код';
+    } catch (error) {
+        alert(error);
+    }
+}
+async function settingsName() {
+    const token = _jsCookieDefault.default.get('token');
+    const currentName = document.querySelector('.messages__name--me').textContent.replace(/\:$/, '') || _const.user.name;
+    const name = _const.UI_ELEMENTS.POPUP.INPUT_NAME.value || 'no_name';
+    _const.user.name = `${name}:`;
+    _view.changeName(name);
+    _view.closePopup();
+    const response = await fetch(_const.url1, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+    if (!response.ok) {
+        _view.changeName(currentName);
+        alert('Вы не авторизованы');
+    }
+}
+_const.UI_ELEMENTS.POPUP.OPEN_SETTINGS.addEventListener('click', _view.openPopup);
+_const.UI_ELEMENTS.BUTTON_LOG_IN.addEventListener('click', logInOrLogOut);
+_const.UI_ELEMENTS.BUTTON_SEND.addEventListener('click', sendMessage);
+_const.UI_ELEMENTS.SEND_CODE_BUTTON.addEventListener('click', sendCode);
+_const.UI_ELEMENTS.LOG_IN.addEventListener('click', logIn);
+_const.UI_ELEMENTS.POPUP.CLOSE.forEach((element)=>{
+    element.addEventListener('click', _view.closePopup);
+});
+_const.UI_ELEMENTS.POPUP.POPUPS.forEach((element)=>{
+    element.addEventListener('click', _view.checkClickOnTarget);
+});
 _const.UI_ELEMENTS.ALL_BUTTONS.forEach((item)=>item.addEventListener('click', (e)=>{
         e.preventDefault();
     })
 );
-_const.UI_ELEMENTS.BUTTON_EXIT.addEventListener('click', _view.closeTab);
-_const.UI_ELEMENTS.BUTTON_SEND.addEventListener('click', sendMessage);
+_const.UI_ELEMENTS.CHANGE_NAME_BUTTON.addEventListener('click', settingsName);
 
-},{"./const":"hKAsx","./view":"2GA9o","date-fns":"9yHCA"}],"hKAsx":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "UI_ELEMENTS", ()=>UI_ELEMENTS
-);
-parcelHelpers.export(exports, "arrMessage", ()=>arrMessage
-);
-const UI_ELEMENTS = {
-    SETTINGS: {
-        WINDOW: document.querySelector('.settings'),
-        OPEN: document.querySelector('.header__settings'),
-        CLOSE: document.querySelector('.settings__exit')
-    },
-    TEMPLATE: {
-        ME: document.querySelector('#messages-me'),
-        COMPANION: document.querySelector('#messages-companion')
-    },
-    OVERLAY: document.querySelector('.container'),
-    ALL_BUTTONS: document.querySelectorAll('.btn'),
-    INPUT_MESSAGE: document.querySelector('.form__input'),
-    BUTTON_EXIT: document.querySelector('.header__exit'),
-    BUTTON_SEND: document.querySelector('.form__btn'),
-    MESSAGE_LIST: document.querySelector('.messages'),
-    MESSAGE_LIST_CONTAINER: document.querySelector('.main')
-};
-const arrMessage = [];
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
-exports.interopDefault = function(a) {
-    return a && a.__esModule ? a : {
-        default: a
+},{"js-cookie":"c8bBu","date-fns":"9yHCA","./const":"hKAsx","./view":"2GA9o","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"c8bBu":[function(require,module,exports) {
+(function(global, factory) {
+    module.exports = factory();
+})(this, function() {
+    'use strict';
+    /* eslint-disable no-var */ function assign(target) {
+        for(var i = 1; i < arguments.length; i++){
+            var source = arguments[i];
+            for(var key in source)target[key] = source[key];
+        }
+        return target;
+    }
+    /* eslint-enable no-var */ /* eslint-disable no-var */ var defaultConverter = {
+        read: function(value) {
+            if (value[0] === '"') value = value.slice(1, -1);
+            return value.replace(/(%[\dA-F]{2})+/gi, decodeURIComponent);
+        },
+        write: function(value) {
+            return encodeURIComponent(value).replace(/%(2[346BF]|3[AC-F]|40|5[BDE]|60|7[BCD])/g, decodeURIComponent);
+        }
     };
-};
-exports.defineInteropFlag = function(a) {
-    Object.defineProperty(a, '__esModule', {
-        value: true
-    });
-};
-exports.exportAll = function(source, dest) {
-    Object.keys(source).forEach(function(key) {
-        if (key === 'default' || key === '__esModule' || dest.hasOwnProperty(key)) return;
-        Object.defineProperty(dest, key, {
-            enumerable: true,
-            get: function() {
-                return source[key];
+    /* eslint-enable no-var */ /* eslint-disable no-var */ function init(converter1, defaultAttributes) {
+        function set(key, value, attributes) {
+            if (typeof document === 'undefined') return;
+            attributes = assign({}, defaultAttributes, attributes);
+            if (typeof attributes.expires === 'number') attributes.expires = new Date(Date.now() + attributes.expires * 864e5);
+            if (attributes.expires) attributes.expires = attributes.expires.toUTCString();
+            key = encodeURIComponent(key).replace(/%(2[346B]|5E|60|7C)/g, decodeURIComponent).replace(/[()]/g, escape);
+            var stringifiedAttributes = '';
+            for(var attributeName in attributes){
+                if (!attributes[attributeName]) continue;
+                stringifiedAttributes += '; ' + attributeName;
+                if (attributes[attributeName] === true) continue;
+                // Considers RFC 6265 section 5.2:
+                // ...
+                // 3.  If the remaining unparsed-attributes contains a %x3B (";")
+                //     character:
+                // Consume the characters of the unparsed-attributes up to,
+                // not including, the first %x3B (";") character.
+                // ...
+                stringifiedAttributes += '=' + attributes[attributeName].split(';')[0];
+            }
+            return document.cookie = key + '=' + converter1.write(value, key) + stringifiedAttributes;
+        }
+        function get(key) {
+            if (typeof document === 'undefined' || arguments.length && !key) return;
+            // To prevent the for loop in the first place assign an empty array
+            // in case there are no cookies at all.
+            var cookies = document.cookie ? document.cookie.split('; ') : [];
+            var jar = {};
+            for(var i = 0; i < cookies.length; i++){
+                var parts = cookies[i].split('=');
+                var value = parts.slice(1).join('=');
+                try {
+                    var foundKey = decodeURIComponent(parts[0]);
+                    jar[foundKey] = converter1.read(value, foundKey);
+                    if (key === foundKey) break;
+                } catch (e) {}
+            }
+            return key ? jar[key] : jar;
+        }
+        return Object.create({
+            set: set,
+            get: get,
+            remove: function(key, attributes) {
+                set(key, '', assign({}, attributes, {
+                    expires: -1
+                }));
+            },
+            withAttributes: function(attributes) {
+                return init(this.converter, assign({}, this.attributes, attributes));
+            },
+            withConverter: function(converter) {
+                return init(assign({}, this.converter, converter), this.attributes);
+            }
+        }, {
+            attributes: {
+                value: Object.freeze(defaultAttributes)
+            },
+            converter: {
+                value: Object.freeze(converter1)
             }
         });
+    }
+    var api = init(defaultConverter, {
+        path: '/'
     });
-    return dest;
-};
-exports.export = function(dest, destName, get) {
-    Object.defineProperty(dest, destName, {
-        enumerable: true,
-        get: get
-    });
-};
+    /* eslint-enable no-var */ return api;
+});
 
-},{}],"2GA9o":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "settingsOpen", ()=>settingsOpen
-);
-parcelHelpers.export(exports, "settingsClose", ()=>settingsClose
-);
-parcelHelpers.export(exports, "checkClickOnTarget", ()=>checkClickOnTarget
-);
-parcelHelpers.export(exports, "closeTab", ()=>closeTab
-);
-parcelHelpers.export(exports, "showMessage", ()=>showMessage
-);
-parcelHelpers.export(exports, "scrollToLastMessage", ()=>scrollToLastMessage
-);
-parcelHelpers.export(exports, "clearInputMessage", ()=>clearInputMessage
-);
-/* eslint-disable no-alert */ /* eslint-disable no-restricted-globals */ var _const = require("./const");
-function settingsOpen() {
-    _const.UI_ELEMENTS.SETTINGS.WINDOW.style.display = 'flex';
-    _const.UI_ELEMENTS.OVERLAY.classList.add('container--active');
-}
-function settingsClose() {
-    _const.UI_ELEMENTS.SETTINGS.WINDOW.style.display = 'none';
-    _const.UI_ELEMENTS.OVERLAY.classList.remove('container--active');
-}
-function checkClickOnTarget(e) {
-    if (e.target === _const.UI_ELEMENTS.SETTINGS.WINDOW) settingsClose();
-}
-function closeTab() {
-    if (confirm('Вы действительно хотите закрыть страницу?')) window.close();
-}
-function showMessage(textMessage, timeMessage) {
-    const templateText = _const.UI_ELEMENTS.TEMPLATE.ME.content.querySelector('p');
-    const templateTime = _const.UI_ELEMENTS.TEMPLATE.ME.content.querySelector('.messages__time');
-    templateText.textContent = textMessage;
-    templateTime.textContent = timeMessage;
-    const li = _const.UI_ELEMENTS.TEMPLATE.ME.content.cloneNode(true);
-    _const.UI_ELEMENTS.MESSAGE_LIST.append(li);
-}
-function scrollToLastMessage() {
-    _const.UI_ELEMENTS.MESSAGE_LIST_CONTAINER.scrollTop = _const.UI_ELEMENTS.MESSAGE_LIST_CONTAINER.scrollHeight;
-}
-function clearInputMessage() {
-    _const.UI_ELEMENTS.INPUT_MESSAGE.value = '';
-}
-
-},{"./const":"hKAsx","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"9yHCA":[function(require,module,exports) {
+},{}],"9yHCA":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 // This file is generated automatically by `scripts/build/indices.js`. Please, don't change it.
@@ -1633,7 +1708,37 @@ function toInteger(dirtyNumber) {
 }
 exports.default = toInteger;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"fsust":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, '__esModule', {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === 'default' || key === '__esModule' || dest.hasOwnProperty(key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
+
+},{}],"fsust":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _indexJs = require("../_lib/requiredArgs/index.js");
@@ -3669,6 +3774,111 @@ var quartersInYear = 4;
 var secondsInHour = 3600;
 var secondsInMinute = 60;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["huMbS","bDbGG"], "bDbGG", "parcelRequire25d8")
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"hKAsx":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "UI_ELEMENTS", ()=>UI_ELEMENTS
+);
+parcelHelpers.export(exports, "url", ()=>url
+);
+parcelHelpers.export(exports, "url1", ()=>url1
+);
+parcelHelpers.export(exports, "user", ()=>user
+);
+parcelHelpers.export(exports, "arrMessage", ()=>arrMessage
+);
+const UI_ELEMENTS = {
+    POPUP: {
+        POPUPS: document.querySelectorAll('.popup'),
+        SETTINGS: document.querySelector('.popup--settings'),
+        LOG_IN: document.querySelector('.popup--log-in'),
+        SEND_CODE: document.querySelector('.popup--send-code'),
+        OPEN_SETTINGS: document.querySelector('.header__settings'),
+        CLOSE: document.querySelectorAll('.popup__exit'),
+        INPUT_NAME: document.querySelector('.popup__input--name'),
+        INPUT_EMAIL: document.querySelector('.popup__input--email'),
+        INPUT_CODE: document.querySelector('.popup__input--code')
+    },
+    TEMPLATE: {
+        ME: document.querySelector('#messages-me'),
+        COMPANION: document.querySelector('#messages-companion')
+    },
+    OVERLAY: document.querySelector('.container'),
+    ALL_BUTTONS: document.querySelectorAll('.btn'),
+    INPUT_MESSAGE: document.querySelector('.form__input'),
+    BUTTON_LOG_IN: document.querySelector('.header__exit'),
+    BUTTON_SEND: document.querySelector('.form__btn'),
+    MESSAGE_LIST: document.querySelector('.messages'),
+    MESSAGE_LIST_CONTAINER: document.querySelector('.main'),
+    SEND_CODE_BUTTON: document.querySelector('.popup__btn--code'),
+    LOG_IN: document.querySelector('.popup__btn--log-in'),
+    CHANGE_NAME_BUTTON: document.querySelector('.popup__btn--settings')
+};
+const url = 'https://mighty-cove-31255.herokuapp.com/api/user';
+const url1 = 'https://mighty-cove-31255.herokuapp.com/api/user/me';
+const user = {
+    name: 'Я:'
+};
+const arrMessage = [];
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"2GA9o":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+// const name = 'no_name';
+parcelHelpers.export(exports, "openPopup", ()=>openPopup
+);
+parcelHelpers.export(exports, "closePopup", ()=>closePopup
+);
+parcelHelpers.export(exports, "checkClickOnTarget", ()=>checkClickOnTarget
+);
+parcelHelpers.export(exports, "showMessage", ()=>showMessage
+);
+parcelHelpers.export(exports, "scrollToLastMessage", ()=>scrollToLastMessage
+);
+parcelHelpers.export(exports, "clearInputMessage", ()=>clearInputMessage
+);
+parcelHelpers.export(exports, "changeName", ()=>changeName
+);
+/* eslint-disable no-param-reassign */ /* eslint-disable no-alert */ /* eslint-disable no-restricted-globals */ var _const = require("./const");
+function openPopup(e) {
+    if (_const.UI_ELEMENTS.POPUP.OPEN_SETTINGS === e.target) _const.UI_ELEMENTS.POPUP.SETTINGS.style.display = 'flex';
+    else if (_const.UI_ELEMENTS.BUTTON_LOG_IN === e) _const.UI_ELEMENTS.POPUP.LOG_IN.style.display = 'flex';
+    else if (_const.UI_ELEMENTS.POPUP.INPUT_EMAIL === e) _const.UI_ELEMENTS.POPUP.SEND_CODE.style.display = 'flex';
+    _const.UI_ELEMENTS.OVERLAY.classList.add('container--active');
+}
+function closePopup() {
+    _const.UI_ELEMENTS.POPUP.POPUPS.forEach((element)=>{
+        element.style.display = 'none';
+    });
+    _const.UI_ELEMENTS.OVERLAY.classList.remove('container--active');
+}
+function checkClickOnTarget(e) {
+    _const.UI_ELEMENTS.POPUP.POPUPS.forEach((element)=>{
+        if (e.target === element) closePopup();
+    });
+}
+function showMessage(textMessage, timeMessage, userName) {
+    const templateText = _const.UI_ELEMENTS.TEMPLATE.ME.content.querySelector('p');
+    const templateTime = _const.UI_ELEMENTS.TEMPLATE.ME.content.querySelector('.messages__time');
+    const templateName = _const.UI_ELEMENTS.TEMPLATE.ME.content.querySelector('.messages__name--me');
+    templateText.textContent = textMessage;
+    templateTime.textContent = timeMessage;
+    templateName.textContent = userName;
+    const li = _const.UI_ELEMENTS.TEMPLATE.ME.content.cloneNode(true);
+    _const.UI_ELEMENTS.MESSAGE_LIST.append(li);
+}
+function scrollToLastMessage() {
+    _const.UI_ELEMENTS.MESSAGE_LIST_CONTAINER.scrollTop = _const.UI_ELEMENTS.MESSAGE_LIST_CONTAINER.scrollHeight;
+}
+function clearInputMessage(input) {
+    input.value = '';
+}
+function changeName(name) {
+    document.querySelectorAll('.messages__name--me').forEach((element)=>{
+        element.textContent = `${name}: `;
+    });
+}
+
+},{"./const":"hKAsx","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["huMbS","bDbGG"], "bDbGG", "parcelRequire25d8")
 
 //# sourceMappingURL=index.fbb3188c.js.map

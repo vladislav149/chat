@@ -173,7 +173,7 @@ body {
   width: 100%;
 }
 
-.settings {
+.popup {
   width: 100%;
   height: 100%;
   z-index: 5;
@@ -183,7 +183,7 @@ body {
   position: fixed;
 }
 
-.settings__inner {
+.popup__inner {
   width: 273px;
   height: 319px;
   background-color: #fff;
@@ -191,13 +191,13 @@ body {
   position: relative;
 }
 
-.settings__title {
+.popup__title {
   margin-bottom: 16px;
   font-size: 16px;
   font-weight: 400;
 }
 
-.settings__exit {
+.popup__exit {
   width: 44px;
   height: 44px;
   font-size: 18px;
@@ -206,14 +206,32 @@ body {
   right: 0;
 }
 
-.settings__label {
+.popup__label {
   margin-bottom: 8px;
   display: block;
 }
 
-.settings__input {
-  max-width: 202px;
+.popup__box {
+  display: flex;
+}
+
+.popup__box--log-in {
+  flex-wrap: wrap;
+}
+
+.popup__input {
+  width: 100%;
+  margin-bottom: 7px;
   margin-right: 8px;
+}
+
+.popup__btn {
+  height: 33px;
+}
+
+.popup__btn--settings {
+  width: 30px;
+  padding: 0;
 }
 
 /*# sourceMappingURL=index.8368275b.css.map */

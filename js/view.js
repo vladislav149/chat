@@ -3,6 +3,8 @@
 /* eslint-disable no-restricted-globals */
 import { UI_ELEMENTS } from './const';
 
+// const name = 'no_name';
+
 export function openPopup(e) {
   if (UI_ELEMENTS.POPUP.OPEN_SETTINGS === e.target) {
     UI_ELEMENTS.POPUP.SETTINGS.style.display = 'flex';
@@ -29,11 +31,13 @@ export function checkClickOnTarget(e) {
   });
 }
 
-export function showMessage(textMessage, timeMessage) {
+export function showMessage(textMessage, timeMessage, userName) {
   const templateText = UI_ELEMENTS.TEMPLATE.ME.content.querySelector('p');
   const templateTime = UI_ELEMENTS.TEMPLATE.ME.content.querySelector('.messages__time');
+  const templateName = UI_ELEMENTS.TEMPLATE.ME.content.querySelector('.messages__name--me');
   templateText.textContent = textMessage;
   templateTime.textContent = timeMessage;
+  templateName.textContent = userName;
   const li = UI_ELEMENTS.TEMPLATE.ME.content.cloneNode(true);
   UI_ELEMENTS.MESSAGE_LIST.append(li);
 }
@@ -44,4 +48,10 @@ export function scrollToLastMessage() {
 
 export function clearInputMessage(input) {
   input.value = '';
+}
+
+export function changeName(name) {
+  document.querySelectorAll('.messages__name--me').forEach((element) => {
+    element.textContent = `${name}: `;
+  });
 }

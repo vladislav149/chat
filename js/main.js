@@ -1,3 +1,5 @@
+/* eslint-disable no-useless-escape */
+/* eslint-disable no-console */
 /* eslint-disable import/named */
 /* eslint-disable no-undef */
 /* eslint-disable no-alert */
@@ -5,14 +7,19 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import Cookies from 'js-cookie';
 import { format } from 'date-fns';
-import { arrMessage, UI_ELEMENTS, url } from './const';
 import {
-  closePopup, checkClickOnTarget, openPopup, showMessage, scrollToLastMessage, clearInputMessage,
+  arrMessage, UI_ELEMENTS, url, url1, user,
+} from './const';
+import {
+  closePopup, checkClickOnTarget, openPopup, showMessage, scrollToLastMessage, clearInputMessage, changeName,
 } from './view';
+// const token
+// const socket = new WebSocket(`ws://mighty-cove-31255.herokuapp.com/websockets?${token}`);
 
 const isThereAnyCookies = Object.keys(Cookies.get()).length === 0;
 if (isThereAnyCookies) {
   UI_ELEMENTS.BUTTON_LOG_IN.textContent = 'Войти';
+  user.name = 'Я: ';
 } else {
   UI_ELEMENTS.BUTTON_LOG_IN.textContent = 'Выйти';
 }
@@ -26,7 +33,7 @@ function sendMessage() {
       timeMessage,
     },
   );
-  showMessage(textMessage, timeMessage);
+  showMessage(textMessage, timeMessage, user.name);
   scrollToLastMessage();
   clearInputMessage(UI_ELEMENTS.INPUT_MESSAGE);
 }
@@ -35,6 +42,7 @@ function logInOrLogOut() {
   if (UI_ELEMENTS.BUTTON_LOG_IN.textContent === 'Выйти') {
     UI_ELEMENTS.BUTTON_LOG_IN.textContent = 'Войти';
     Cookies.remove('token');
+    user.name = 'Я:';
   } else {
     openPopup(UI_ELEMENTS.BUTTON_LOG_IN);
   }
@@ -67,7 +75,8 @@ async function sendCode() {
 
 async function logIn() {
   const token = UI_ELEMENTS.POPUP.INPUT_CODE.value;
-  const name = UI_ELEMENTS.POPUP.INPUT_NAME.value;
+  const name = UI_ELEMENTS.POPUP.INPUT_NAME.value || 'no_name';
+  console.log(name);
   Cookies.set('token', token);
   try {
     const response = await fetch(url, {
@@ -80,11 +89,34 @@ async function logIn() {
     });
     if (response.ok) {
       closePopup();
+      changeName(name);
+      UI_ELEMENTS.BUTTON_LOG_IN.textContent = 'Выйти';
     } else {
       UI_ELEMENTS.POPUP.INPUT_CODE.placeholder = 'Перепроверьте код';
     }
   } catch (error) {
     alert(error);
+  }
+}
+
+async function settingsName() {
+  const token = Cookies.get('token');
+  const currentName = document.querySelector('.messages__name--me').textContent.replace(/\:$/, '') || user.name;
+  const name = UI_ELEMENTS.POPUP.INPUT_NAME.value || 'no_name';
+  user.name = `${name}:`;
+  changeName(name);
+  closePopup();
+  const response = await fetch(
+    url1,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+  if (!response.ok) {
+    changeName(currentName);
+    alert('Вы не авторизованы');
   }
 }
 
@@ -102,3 +134,4 @@ UI_ELEMENTS.POPUP.POPUPS.forEach((element) => {
 UI_ELEMENTS.ALL_BUTTONS.forEach((item) => item.addEventListener('click', (e) => {
   e.preventDefault();
 }));
+UI_ELEMENTS.CHANGE_NAME_BUTTON.addEventListener('click', settingsName);
