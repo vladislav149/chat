@@ -8,13 +8,14 @@
 import Cookies from 'js-cookie';
 import { format } from 'date-fns';
 import {
-  arrMessage, UI_ELEMENTS, url, url1, user,
+  arrMessage, socketUrl, UI_ELEMENTS, url, url1, user,
 } from './const';
 import {
   closePopup, checkClickOnTarget, openPopup, showMessage, scrollToLastMessage, clearInputMessage, changeName,
 } from './view';
-// const token
-// const socket = new WebSocket(`ws://mighty-cove-31255.herokuapp.com/websockets?${token}`);
+
+const savedToken = Cookies.get('token');
+const socket = new WebSocket(`${socketUrl}${savedToken}`);
 
 const isThereAnyCookies = Object.keys(Cookies.get()).length === 0;
 if (isThereAnyCookies) {
@@ -36,6 +37,12 @@ function sendMessage() {
   showMessage(textMessage, timeMessage, user.name);
   scrollToLastMessage();
   clearInputMessage(UI_ELEMENTS.INPUT_MESSAGE);
+  socket.send(JSON.stringify({
+    text: textMessage,
+  }));
+  socket.onmessage = function (event) {
+    console.log(event.data);
+  };
 }
 
 function logInOrLogOut() {
@@ -76,7 +83,6 @@ async function sendCode() {
 async function logIn() {
   const token = UI_ELEMENTS.POPUP.INPUT_CODE.value;
   const name = UI_ELEMENTS.POPUP.INPUT_NAME.value || 'no_name';
-  console.log(name);
   Cookies.set('token', token);
   try {
     const response = await fetch(url, {
@@ -88,9 +94,9 @@ async function logIn() {
       body: JSON.stringify({ name }),
     });
     if (response.ok) {
-      closePopup();
       changeName(name);
       UI_ELEMENTS.BUTTON_LOG_IN.textContent = 'Выйти';
+      window.location.reload();
     } else {
       UI_ELEMENTS.POPUP.INPUT_CODE.placeholder = 'Перепроверьте код';
     }

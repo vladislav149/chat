@@ -28,7 +28,7 @@ export const UI_ELEMENTS = {
 
 export const url = 'https://mighty-cove-31255.herokuapp.com/api/user';
 export const url1 = 'https://mighty-cove-31255.herokuapp.com/api/user/me';
-
+export const socketUrl = 'ws://mighty-cove-31255.herokuapp.com/websockets?';
 export const user = {
   name: 'Я:',
 };

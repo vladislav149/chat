@@ -532,8 +532,8 @@ var _jsCookieDefault = parcelHelpers.interopDefault(_jsCookie);
 var _dateFns = require("date-fns");
 var _const = require("./const");
 var _view = require("./view");
-// const token
-// const socket = new WebSocket(`ws://mighty-cove-31255.herokuapp.com/websockets?${token}`);
+const savedToken = _jsCookieDefault.default.get('token');
+const socket = new WebSocket(`${_const.socketUrl}${savedToken}`);
 const isThereAnyCookies = Object.keys(_jsCookieDefault.default.get()).length === 0;
 if (isThereAnyCookies) {
     _const.UI_ELEMENTS.BUTTON_LOG_IN.textContent = 'Войти';
@@ -549,6 +549,12 @@ function sendMessage() {
     _view.showMessage(textMessage, timeMessage, _const.user.name);
     _view.scrollToLastMessage();
     _view.clearInputMessage(_const.UI_ELEMENTS.INPUT_MESSAGE);
+    socket.send(JSON.stringify({
+        text: textMessage
+    }));
+    socket.onmessage = function(event) {
+        console.log(event.data);
+    };
 }
 function logInOrLogOut() {
     if (_const.UI_ELEMENTS.BUTTON_LOG_IN.textContent === 'Выйти') {
@@ -583,7 +589,6 @@ async function sendCode() {
 async function logIn() {
     const token = _const.UI_ELEMENTS.POPUP.INPUT_CODE.value;
     const name = _const.UI_ELEMENTS.POPUP.INPUT_NAME.value || 'no_name';
-    console.log(name);
     _jsCookieDefault.default.set('token', token);
     try {
         const response = await fetch(_const.url, {
@@ -597,9 +602,9 @@ async function logIn() {
             })
         });
         if (response.ok) {
-            _view.closePopup();
             _view.changeName(name);
             _const.UI_ELEMENTS.BUTTON_LOG_IN.textContent = 'Выйти';
+            window.location.reload();
         } else _const.UI_ELEMENTS.POPUP.INPUT_CODE.placeholder = 'Перепроверьте код';
     } catch (error) {
         alert(error);
@@ -3783,6 +3788,8 @@ parcelHelpers.export(exports, "url", ()=>url
 );
 parcelHelpers.export(exports, "url1", ()=>url1
 );
+parcelHelpers.export(exports, "socketUrl", ()=>socketUrl
+);
 parcelHelpers.export(exports, "user", ()=>user
 );
 parcelHelpers.export(exports, "arrMessage", ()=>arrMessage
@@ -3816,6 +3823,7 @@ const UI_ELEMENTS = {
 };
 const url = 'https://mighty-cove-31255.herokuapp.com/api/user';
 const url1 = 'https://mighty-cove-31255.herokuapp.com/api/user/me';
+const socketUrl = 'ws://mighty-cove-31255.herokuapp.com/websockets?';
 const user = {
     name: 'Я:'
 };
