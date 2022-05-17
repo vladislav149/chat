@@ -31,15 +31,17 @@ export function checkClickOnTarget(e) {
   });
 }
 
-export function showMessage(textMessage, timeMessage, userName) {
-  const templateText = UI_ELEMENTS.TEMPLATE.ME.content.querySelector('p');
-  const templateTime = UI_ELEMENTS.TEMPLATE.ME.content.querySelector('.messages__time');
-  const templateName = UI_ELEMENTS.TEMPLATE.ME.content.querySelector('.messages__name--me');
+export function showMessage(textMessage, timeMessage, userName, user) {
+  const companion = user === 'me' ? UI_ELEMENTS.TEMPLATE.ME : UI_ELEMENTS.TEMPLATE.COMPANION;
+  const message = user === 'me' ? '.messages__name--me' : '.messages__name';
+  const templateText = companion.content.querySelector('p');
+  const templateTime = companion.content.querySelector('.messages__time');
+  const templateName = companion.content.querySelector(message);
   templateText.textContent = textMessage;
   templateTime.textContent = timeMessage;
   templateName.textContent = userName;
-  const li = UI_ELEMENTS.TEMPLATE.ME.content.cloneNode(true);
-  UI_ELEMENTS.MESSAGE_LIST.append(li);
+  const liNode = companion.content.cloneNode(true);
+  UI_ELEMENTS.MESSAGE_LIST.append(liNode);
 }
 
 export function scrollToLastMessage() {

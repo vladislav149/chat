@@ -32,5 +32,3 @@ export const socketUrl = 'ws://mighty-cove-31255.herokuapp.com/websockets?';
 export const user = {
   name: 'Я:',
 };
-
-export const arrMessage = [];

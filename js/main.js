@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-useless-escape */
 /* eslint-disable no-console */
 /* eslint-disable import/named */
@@ -8,14 +9,53 @@
 import Cookies from 'js-cookie';
 import { format } from 'date-fns';
 import {
-  arrMessage, socketUrl, UI_ELEMENTS, url, url1, user,
+  socketUrl, UI_ELEMENTS, url, url1, user,
 } from './const';
 import {
   closePopup, checkClickOnTarget, openPopup, showMessage, scrollToLastMessage, clearInputMessage, changeName,
 } from './view';
 
 const savedToken = Cookies.get('token');
-const socket = new WebSocket(`${socketUrl}${savedToken}`);
+let interval;
+
+function start() {
+  clearInterval(interval);
+  socket = new WebSocket(`${socketUrl}${savedToken}`);
+
+  socket.onopen = () => {
+    sockets = true;
+    console.log('Соединение с сокет-сервером Установленно');
+  };
+
+  socket.onclose = () => {
+    sockets = false;
+    console.log('Соединение с сокет-сервером Закрыто');
+  };
+
+  socket.onmessage = (event) => {
+    const toJson = JSON.parse(event.data);
+    const timeMessage = format(new Date(toJson.createdAt), 'HH:mm');
+    const email = Cookies.get('email');
+    if (toJson.user.email === email) {
+      return;
+    }
+    showMessage(toJson.text, timeMessage, `${toJson.user.name}:`);
+  };
+
+  interval = setInterval(() => {
+    if (!sockets) {
+      start();
+    }
+  }, 5000);
+}
+start();
+
+/* const socket = new WebSocket(`${socketUrl}${savedToken}`);
+socket.onopen = () => { console.log('connection established'); };
+socket.onclose = () => {
+  console.log('connection is down');
+};
+socket.onmessage = (event) => { console.log(event.data); }; */
 
 const isThereAnyCookies = Object.keys(Cookies.get()).length === 0;
 if (isThereAnyCookies) {
@@ -26,29 +66,25 @@ if (isThereAnyCookies) {
 }
 
 function sendMessage() {
+  if (!savedToken) {
+    clearInputMessage(UI_ELEMENTS.INPUT_MESSAGE);
+    return alert('Вы не вошли');
+  }
   const textMessage = UI_ELEMENTS.INPUT_MESSAGE.value;
   const timeMessage = format(new Date(), 'HH:mm');
-  arrMessage.push(
-    {
-      textMessage,
-      timeMessage,
-    },
-  );
-  showMessage(textMessage, timeMessage, user.name);
+  showMessage(textMessage, timeMessage, user.name, 'me');
   scrollToLastMessage();
   clearInputMessage(UI_ELEMENTS.INPUT_MESSAGE);
   socket.send(JSON.stringify({
     text: textMessage,
   }));
-  socket.onmessage = function (event) {
-    console.log(event.data);
-  };
 }
 
 function logInOrLogOut() {
   if (UI_ELEMENTS.BUTTON_LOG_IN.textContent === 'Выйти') {
     UI_ELEMENTS.BUTTON_LOG_IN.textContent = 'Войти';
     Cookies.remove('token');
+    Cookies.remove('email');
     user.name = 'Я:';
   } else {
     openPopup(UI_ELEMENTS.BUTTON_LOG_IN);
@@ -62,6 +98,7 @@ async function sendCode() {
     UI_ELEMENTS.POPUP.INPUT_EMAIL.placeholder = 'нельзя ввести пустой email';
     return;
   }
+  Cookies.set('email', email);
   try {
     const response = await fetch(url, {
       method: 'POST',
@@ -96,12 +133,28 @@ async function logIn() {
     if (response.ok) {
       changeName(name);
       UI_ELEMENTS.BUTTON_LOG_IN.textContent = 'Выйти';
-      window.location.reload();
+      start();
     } else {
       UI_ELEMENTS.POPUP.INPUT_CODE.placeholder = 'Перепроверьте код';
     }
   } catch (error) {
     alert(error);
+  }
+}
+
+async function changeSendName(name) {
+  const token = Cookies.get('token');
+  const response = await fetch(url, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json;charset=utf-8',
+    },
+    body: JSON.stringify({ name }),
+  });
+  if (response.ok) {
+    console.log('ok');
+    console.log(name);
   }
 }
 
@@ -111,6 +164,7 @@ async function settingsName() {
   const name = UI_ELEMENTS.POPUP.INPUT_NAME.value || 'no_name';
   user.name = `${name}:`;
   changeName(name);
+  changeSendName(name);
   closePopup();
   const response = await fetch(
     url1,

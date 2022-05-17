@@ -527,39 +527,65 @@ function hmrAcceptRun(bundle, id) {
 
 },{}],"bDbGG":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-/* eslint-disable no-useless-escape */ /* eslint-disable no-console */ /* eslint-disable import/named */ /* eslint-disable no-undef */ /* eslint-disable no-alert */ /* eslint-disable max-len */ /* eslint-disable import/no-extraneous-dependencies */ var _jsCookie = require("js-cookie");
+/* eslint-disable consistent-return */ /* eslint-disable no-useless-escape */ /* eslint-disable no-console */ /* eslint-disable import/named */ /* eslint-disable no-undef */ /* eslint-disable no-alert */ /* eslint-disable max-len */ /* eslint-disable import/no-extraneous-dependencies */ var _jsCookie = require("js-cookie");
 var _jsCookieDefault = parcelHelpers.interopDefault(_jsCookie);
 var _dateFns = require("date-fns");
 var _const = require("./const");
 var _view = require("./view");
 const savedToken = _jsCookieDefault.default.get('token');
-const socket = new WebSocket(`${_const.socketUrl}${savedToken}`);
-const isThereAnyCookies = Object.keys(_jsCookieDefault.default.get()).length === 0;
+let interval;
+function start() {
+    clearInterval(interval);
+    socket = new WebSocket(`${_const.socketUrl}${savedToken}`);
+    socket.onopen = ()=>{
+        sockets = true;
+        console.log('Соединение с сокет-сервером Установленно');
+    };
+    socket.onclose = ()=>{
+        sockets = false;
+        console.log('Соединение с сокет-сервером Закрыто');
+    };
+    socket.onmessage = (event)=>{
+        const toJson = JSON.parse(event.data);
+        const timeMessage = _dateFns.format(new Date(toJson.createdAt), 'HH:mm');
+        const email = _jsCookieDefault.default.get('email');
+        if (toJson.user.email === email) return;
+        _view.showMessage(toJson.text, timeMessage, `${toJson.user.name}:`);
+    };
+    interval = setInterval(()=>{
+        if (!sockets) start();
+    }, 5000);
+}
+start();
+/* const socket = new WebSocket(`${socketUrl}${savedToken}`);
+socket.onopen = () => { console.log('connection established'); };
+socket.onclose = () => {
+  console.log('connection is down');
+};
+socket.onmessage = (event) => { console.log(event.data); }; */ const isThereAnyCookies = Object.keys(_jsCookieDefault.default.get()).length === 0;
 if (isThereAnyCookies) {
     _const.UI_ELEMENTS.BUTTON_LOG_IN.textContent = 'Войти';
     _const.user.name = 'Я: ';
 } else _const.UI_ELEMENTS.BUTTON_LOG_IN.textContent = 'Выйти';
 function sendMessage() {
+    if (!savedToken) {
+        _view.clearInputMessage(_const.UI_ELEMENTS.INPUT_MESSAGE);
+        return alert('Вы не вошли');
+    }
     const textMessage = _const.UI_ELEMENTS.INPUT_MESSAGE.value;
     const timeMessage = _dateFns.format(new Date(), 'HH:mm');
-    _const.arrMessage.push({
-        textMessage,
-        timeMessage
-    });
-    _view.showMessage(textMessage, timeMessage, _const.user.name);
+    _view.showMessage(textMessage, timeMessage, _const.user.name, 'me');
     _view.scrollToLastMessage();
     _view.clearInputMessage(_const.UI_ELEMENTS.INPUT_MESSAGE);
     socket.send(JSON.stringify({
         text: textMessage
     }));
-    socket.onmessage = function(event) {
-        console.log(event.data);
-    };
 }
 function logInOrLogOut() {
     if (_const.UI_ELEMENTS.BUTTON_LOG_IN.textContent === 'Выйти') {
         _const.UI_ELEMENTS.BUTTON_LOG_IN.textContent = 'Войти';
         _jsCookieDefault.default.remove('token');
+        _jsCookieDefault.default.remove('email');
         _const.user.name = 'Я:';
     } else _view.openPopup(_const.UI_ELEMENTS.BUTTON_LOG_IN);
 }
@@ -570,6 +596,7 @@ async function sendCode() {
         _const.UI_ELEMENTS.POPUP.INPUT_EMAIL.placeholder = 'нельзя ввести пустой email';
         return;
     }
+    _jsCookieDefault.default.set('email', email);
     try {
         const response = await fetch(_const.url, {
             method: 'POST',
@@ -604,10 +631,27 @@ async function logIn() {
         if (response.ok) {
             _view.changeName(name);
             _const.UI_ELEMENTS.BUTTON_LOG_IN.textContent = 'Выйти';
-            window.location.reload();
+            start();
         } else _const.UI_ELEMENTS.POPUP.INPUT_CODE.placeholder = 'Перепроверьте код';
     } catch (error) {
         alert(error);
+    }
+}
+async function changeSendName(name) {
+    const token = _jsCookieDefault.default.get('token');
+    const response = await fetch(_const.url, {
+        method: 'PATCH',
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify({
+            name
+        })
+    });
+    if (response.ok) {
+        console.log('ok');
+        console.log(name);
     }
 }
 async function settingsName() {
@@ -616,6 +660,7 @@ async function settingsName() {
     const name = _const.UI_ELEMENTS.POPUP.INPUT_NAME.value || 'no_name';
     _const.user.name = `${name}:`;
     _view.changeName(name);
+    changeSendName(name);
     _view.closePopup();
     const response = await fetch(_const.url1, {
         headers: {
@@ -3792,8 +3837,6 @@ parcelHelpers.export(exports, "socketUrl", ()=>socketUrl
 );
 parcelHelpers.export(exports, "user", ()=>user
 );
-parcelHelpers.export(exports, "arrMessage", ()=>arrMessage
-);
 const UI_ELEMENTS = {
     POPUP: {
         POPUPS: document.querySelectorAll('.popup'),
@@ -3827,7 +3870,6 @@ const socketUrl = 'ws://mighty-cove-31255.herokuapp.com/websockets?';
 const user = {
     name: 'Я:'
 };
-const arrMessage = [];
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"2GA9o":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -3865,15 +3907,17 @@ function checkClickOnTarget(e) {
         if (e.target === element) closePopup();
     });
 }
-function showMessage(textMessage, timeMessage, userName) {
-    const templateText = _const.UI_ELEMENTS.TEMPLATE.ME.content.querySelector('p');
-    const templateTime = _const.UI_ELEMENTS.TEMPLATE.ME.content.querySelector('.messages__time');
-    const templateName = _const.UI_ELEMENTS.TEMPLATE.ME.content.querySelector('.messages__name--me');
+function showMessage(textMessage, timeMessage, userName, user) {
+    const companion = user === 'me' ? _const.UI_ELEMENTS.TEMPLATE.ME : _const.UI_ELEMENTS.TEMPLATE.COMPANION;
+    const message = user === 'me' ? '.messages__name--me' : '.messages__name';
+    const templateText = companion.content.querySelector('p');
+    const templateTime = companion.content.querySelector('.messages__time');
+    const templateName = companion.content.querySelector(message);
     templateText.textContent = textMessage;
     templateTime.textContent = timeMessage;
     templateName.textContent = userName;
-    const li = _const.UI_ELEMENTS.TEMPLATE.ME.content.cloneNode(true);
-    _const.UI_ELEMENTS.MESSAGE_LIST.append(li);
+    const liNode = companion.content.cloneNode(true);
+    _const.UI_ELEMENTS.MESSAGE_LIST.append(liNode);
 }
 function scrollToLastMessage() {
     _const.UI_ELEMENTS.MESSAGE_LIST_CONTAINER.scrollTop = _const.UI_ELEMENTS.MESSAGE_LIST_CONTAINER.scrollHeight;
